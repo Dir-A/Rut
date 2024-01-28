@@ -1,6 +1,8 @@
-﻿if (TARGET Rut)
-   return()
-endif()
+﻿# Main CMakeLists
+cmake_minimum_required(VERSION 3.15)
+
+# Option
+option(Rut_Test_Mod "" ON)
 
 # Project Name
 project(Rut)
@@ -26,5 +28,16 @@ list(APPEND SRC_FILE
 
 # Set Library
 add_library("${PROJECT_NAME}" "${SRC_FILE}")
+target_include_directories(Rut INTERFACE "src")
 
+# Compiler
+target_compile_definitions(Rut INTERFACE UNICODE _UNICODE)
+target_link_options(Rut INTERFACE "$<$<CXX_COMPILER_ID:MSVC>:/OPT:REF>")
+target_link_options(Rut INTERFACE "$<$<CXX_COMPILER_ID:MSVC>:/LTCG:INCREMENTAL>")
+target_compile_options(Rut INTERFACE "$<$<CXX_COMPILER_ID:MSVC>:/source-charset:utf-8>")
+
+# Test
+if(Rut_Test_Mod)
+    add_subdirectory("test")
+endif()
 
