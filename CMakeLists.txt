@@ -1,9 +1,6 @@
 ﻿# Main CMakeLists
 cmake_minimum_required(VERSION 3.15)
 
-# Option
-option(Rut_Test_Mod "" ON)
-
 # Project Name
 project(Rut)
 
@@ -37,7 +34,7 @@ target_link_options(Rut INTERFACE "$<$<CXX_COMPILER_ID:MSVC>:/LTCG:INCREMENTAL>"
 target_compile_options(Rut INTERFACE "$<$<CXX_COMPILER_ID:MSVC>:/source-charset:utf-8>")
 
 # Test
-if(Rut_Test_Mod)
+if(RUT_BUILD_TEST)
     add_subdirectory("test")
 endif()
 
