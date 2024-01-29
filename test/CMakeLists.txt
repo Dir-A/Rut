@@ -1,5 +1,5 @@
 ﻿# Project Name
-project(Rut_Tester)
+project(Rut_Test)
 
 # Cpp Standard
 set(CMAKE_CXX_STANDARD 23)
