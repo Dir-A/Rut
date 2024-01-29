@@ -291,10 +291,14 @@ namespace Rut::RxJson
 		return this->operator std::wstring_view();
 	}
 
-	void JValue::Dump(std::wstring& wsText, bool isFormat, bool isOrder) const
+	static void FormatNewLine(std::wstring& wsText, size_t nIndent)
 	{
-		static size_t count = 0;
+		wsText.append(1, L'\n');
+		wsText.append(nIndent, L'\t');
+	}
 
+	void JValue::Dump(std::wstring& wsText, bool isFormat, bool isOrder, size_t nIndent) const
+	{
 		switch (m_Type)
 		{
 		case JValueType::JVALUE_NUL: { wsText.append(L"null"); } break;
@@ -334,30 +338,22 @@ namespace Rut::RxJson
 		{
 			wsText.append(1, L'[');
 
-			count++;
+			nIndent++;
 			{
 				for (auto& value : *(m_Value.AryPtr))
 				{
-					if (isFormat)
-					{
-						wsText.append(1, L'\n');
-						wsText.append(count, L'\t');
-					}
-					value.Dump(wsText, isFormat);
+					isFormat ? FormatNewLine(wsText, nIndent) : (void)0;
+					value.Dump(wsText, isFormat, isOrder, nIndent);
 					wsText.append(1, L',');
 				}
 			}
-			count--;
+			nIndent--;
 
 			// if not null array
 			if (wsText.back() == L',')
 			{
 				wsText.pop_back();
-				if (isFormat)
-				{
-					wsText.append(1, L'\n');
-					wsText.append(count, L'\t');
-				}
+				isFormat ? FormatNewLine(wsText, nIndent) : (void)0;
 			}
 
 			wsText.append(1, L']');
@@ -368,24 +364,17 @@ namespace Rut::RxJson
 		{
 			wsText.append(1, L'{');
 
-			count++;
+			nIndent++;
 			{
-				auto fn_proce_one = [&wsText, &isFormat](const std::pair<const std::wstring, JValue>& rfKV)
+				auto fn_proce_one = [&wsText, &isFormat, &isOrder, &nIndent](const std::pair<const std::wstring, JValue>& rfKV)
 					{
-						if (isFormat)
-						{
-							wsText.append(1, L'\n');
-							wsText.append(count, L'\t');
-						}
+						isFormat ? FormatNewLine(wsText, nIndent) : (void)0;
 						wsText.append(1, L'\"');
 						wsText.append(rfKV.first);
 						wsText.append(1, L'\"');
 						wsText.append(1, L':');
-						if (isFormat)
-						{
-							wsText.append(1, L' ');
-						}
-						rfKV.second.Dump(wsText, isFormat);
+						isFormat ? (void)(wsText.append(1, L' ')) : (void)0;
+						rfKV.second.Dump(wsText, isFormat, isOrder, nIndent);
 						wsText.append(1, L',');
 					};
 
@@ -414,17 +403,13 @@ namespace Rut::RxJson
 				}
 
 			}
-			count--;
+			nIndent--;
 
 			// if not null object
 			if (wsText.back() == L',')
 			{
 				wsText.pop_back();
-				if (isFormat)
-				{
-					wsText.append(1, L'\n');
-					wsText.append(count, L'\t');
-				}
+				isFormat ? FormatNewLine(wsText, nIndent) : void(0);
 			}
 
 			wsText.append(1, L'}');

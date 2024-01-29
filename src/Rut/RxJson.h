@@ -100,7 +100,7 @@ namespace Rut::RxJson
 		const wchar_t* ToStrPtr() const;
 		std::wstring_view ToStrView() const;
 
-		void Dump(std::wstring& wsText, bool isFormat = true, bool isOrder = false) const;
+		void Dump(std::wstring& wsText, bool isFormat = true, bool isOrder = false, size_t nIndent = 0) const;
 	};
 }
 
