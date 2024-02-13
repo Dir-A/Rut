@@ -66,10 +66,6 @@ namespace Rut::RxJson
 		JValue& operator = (const JValue& rfJValue);
 		JValue& operator = (JValue&& rfJValue) noexcept;
 
-		//Array
-		void Append(const JValue& rfJValue);
-		void Append(JValue&& rfJValue);
-
 		// Obj
 		JValue& operator[](bool) = delete;
 		JValue& operator[](size_t) = delete;

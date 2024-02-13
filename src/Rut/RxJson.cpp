@@ -126,20 +126,6 @@ namespace Rut::RxJson
 		return this->Move(rfJValue);
 	}
 
-	//Array
-	void JValue::Append(const JValue& rfJValue)
-	{
-		assert(m_Type == JVALUE_ARY);
-		m_Value.AryPtr->emplace_back(rfJValue);
-	}
-
-	void JValue::Append(JValue&& rfJValue)
-	{
-		assert(m_Type == JVALUE_ARY);
-		m_Value.AryPtr->emplace_back(std::move(rfJValue));
-	}
-
-
 	// Obj
 	JValue& JValue::operator[](const wchar_t* wpKey)
 	{
@@ -503,14 +489,14 @@ namespace Rut::RxJson
 	{
 		assert(this->GetCurChar() == L'[');
 
-		rfJValue.ToAry();
+		JArray& jarry =  rfJValue.ToAry();
 		this->AddReadCCH();
 
 		while (this->GetToken() != L']')
 		{
 			JValue value;
 			this->ParseValue(value);
-			rfJValue.Append(std::move(value));
+			jarry.emplace_back(std::move(value));
 		}
 
 		this->AddReadCCH();
