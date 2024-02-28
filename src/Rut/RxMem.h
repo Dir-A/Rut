@@ -25,6 +25,9 @@ namespace Rut::RxMem
 		template<class Ptr_T> auto CurPtr() const;
 		template<class Data_T> auto Read();
 		template<class Data_T> void Write(const Data_T& rfData);
+		template<class Data_T> Viewer& operator>>(Data_T& rfData);
+		template<class Data_T> Viewer& operator<<(const Data_T& rfData);
+
 	};
 
 	Viewer::Viewer(const void* pData) : m_pData((const uint8_t*)pData)
@@ -65,6 +68,18 @@ namespace Rut::RxMem
 	{
 		this->CurPtr<Data_T*>()[0] = rfData;
 		m_nPos += sizeof(Data_T);
+	}
+
+	template<class Data_T> Viewer& Viewer::operator>>(Data_T& rfData)
+	{
+		rfData = this->Read<Data_T>();
+		return *this;
+	}
+
+	template<class Data_T> Viewer& Viewer::operator<<(const Data_T& rfData)
+	{
+		this->Write<Data_T>(rfData);
+		return *this;
 	}
 }
 
