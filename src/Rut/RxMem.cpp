@@ -150,6 +150,11 @@ namespace Rut::RxMem
 
 
 
+	Viewer Auto::GetView()
+	{
+		return Viewer{ this->GetPtr() };
+	}
+
 	void Auto::SetSize(size_t uiNewSize, bool isCopy)
 	{
 		if (m_uiMemSize == 0)
