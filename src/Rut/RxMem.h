@@ -10,15 +10,15 @@
 
 namespace Rut::RxMem
 {
-	class Viewer
+	class View
 	{
 	private:
 		size_t m_nPos = 0;
 		const uint8_t* m_pData = nullptr;
 
 	public:
-		Viewer(const void* pData);
-		template<class Size_T> Viewer(const void* pData, Size_T nSkip);
+		View(const void* pData);
+		template<class Size_T> View(const void* pData, Size_T nSkip);
 
 	public:
 		void Rewind();
@@ -28,32 +28,32 @@ namespace Rut::RxMem
 		template<class Size_T> void Read(void* pData, Size_T nBytes);
 		template<class Data_T> void Write(const Data_T& rfData);
 		template<class Size_T> void Write(const void* pData, Size_T nBytes);
-		template<class Data_T> Viewer& operator>>(Data_T& rfData);
-		template<class Data_T> Viewer& operator<<(const Data_T& rfData);
+		template<class Data_T> View& operator>>(Data_T& rfData);
+		template<class Data_T> View& operator<<(const Data_T& rfData);
 
 	};
 
-	inline Viewer::Viewer(const void* pData) : m_pData((const uint8_t*)pData)
+	inline View::View(const void* pData) : m_pData((const uint8_t*)pData)
 	{
 
 	}
 
-	template<class Size_T> inline Viewer::Viewer(const void* pData, Size_T nSkip) : m_pData((const uint8_t*)pData), m_nPos((size_t)nSkip)
+	template<class Size_T> inline View::View(const void* pData, Size_T nSkip) : m_pData((const uint8_t*)pData), m_nPos((size_t)nSkip)
 	{
 
 	}
 
-	inline void Viewer::Rewind()
+	inline void View::Rewind()
 	{
 		m_nPos = 0;
 	}
 
-	template<class Size_T> inline void Viewer::Skip(Size_T nBytes)
+	template<class Size_T> inline void View::Skip(Size_T nBytes)
 	{
 		m_nPos += (Size_T)nBytes;
 	}
 
-	template<class Ptr_T> inline auto Viewer::CurPtr() const
+	template<class Ptr_T> inline auto View::CurPtr() const
 	{
 		if constexpr (std::is_pointer_v<Ptr_T>)
 		{
@@ -65,37 +65,37 @@ namespace Rut::RxMem
 		}
 	}
 
-	template<class Data_T> inline auto Viewer::Read()
+	template<class Data_T> inline auto View::Read()
 	{
 		Data_T val;
 		this->Read(&val, sizeof(val));
 		return val;
 	}
 
-	template<class Size_T> inline void Viewer::Read(void* pData, Size_T nBytes)
+	template<class Size_T> inline void View::Read(void* pData, Size_T nBytes)
 	{
 		std::memcpy(pData, this->CurPtr<void>(), nBytes);
 		m_nPos += nBytes;
 	}
 
-	template<class Data_T> inline void Viewer::Write(const Data_T& rfData)
+	template<class Data_T> inline void View::Write(const Data_T& rfData)
 	{
 		this->Write(&rfData, sizeof(rfData));
 	}
 
-	template<class Size_T> inline void Viewer::Write(const void* pData, Size_T nBytes)
+	template<class Size_T> inline void View::Write(const void* pData, Size_T nBytes)
 	{
 		std::memcpy(this->CurPtr<void>(), pData, nBytes);
 		m_nPos += nBytes;
 	}
 
-	template<class Data_T> inline Viewer& Viewer::operator>>(Data_T& rfData)
+	template<class Data_T> inline View& View::operator>>(Data_T& rfData)
 	{
 		rfData = this->Read<Data_T>();
 		return *this;
 	}
 
-	template<class Data_T> inline Viewer& Viewer::operator<<(const Data_T& rfData)
+	template<class Data_T> inline View& View::operator<<(const Data_T& rfData)
 	{
 		this->Write<Data_T>(rfData);
 		return *this;
@@ -151,7 +151,7 @@ namespace Rut::RxMem
 	public:
 		template<class T = uint8_t*> T GetPtr() const noexcept;
 		template<class T = size_t> constexpr T GetSize() const noexcept;
-		Viewer GetView();
+		View GetView();
 		void SetSize(size_t uiNewSize, bool isCopy = false);
 	};
 

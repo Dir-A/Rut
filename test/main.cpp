@@ -4,31 +4,30 @@
 int main(int argc, char* argv[])
 {
 	uint32_t buffer[3] = { 0 };
-	Rut::RxMem::Viewer viewer{ buffer };
+	Rut::RxMem::View view{ buffer };
 
-	
+	view.Write<uint32_t>(10);
+	view.Write<uint32_t>(11);
+	view.Write<uint32_t>(13);
+	view.Rewind();
 
-	viewer.Write<uint32_t>(10);
-	viewer.Write<uint32_t>(11);
-	viewer.Write<uint32_t>(13);
-	viewer.Rewind();
+	auto x0 = view.Read<uint32_t>();
+	auto x1 = view.Read<uint32_t>();
+	auto x3 = view.Read< uint32_t>();
+	view.Rewind();
 
-	auto x0 = viewer.Read<uint32_t>();
-	auto x1 = viewer.Read<uint32_t>();
-	auto x3 = viewer.Read< uint32_t>();
-	viewer.Rewind();
-
-	viewer << 11 << 12 << 13;
-	viewer.Rewind();
+	view << 11 << 12 << 13;
+	view.Rewind();
 
 	auto t0 = 0;
 	auto t1 = 0;
 	auto t2 = 0;
-	viewer >> t0 >> t1 >> t2;
-	viewer.Rewind();
+	view >> t0 >> t1 >> t2;
+	view.Rewind();
 
 	std::string stx = "123";
-	viewer.Write(stx.data(),stx.size() + 1);
+	view.Write(stx.data(),stx.size() + 1);
+	view.Rewind();
 
 	int a = 0;
 }
