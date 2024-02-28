@@ -5,6 +5,9 @@ int main(int argc, char* argv[])
 {
 	uint32_t buffer[3] = { 0 };
 	Rut::RxMem::Viewer viewer{ buffer };
+
+	
+
 	viewer.Write<uint32_t>(10);
 	viewer.Write<uint32_t>(11);
 	viewer.Write<uint32_t>(13);
@@ -23,6 +26,9 @@ int main(int argc, char* argv[])
 	auto t2 = 0;
 	viewer >> t0 >> t1 >> t2;
 	viewer.Rewind();
+
+	std::string stx = "123";
+	viewer.Write(stx.data(),stx.size() + 1);
 
 	int a = 0;
 }
