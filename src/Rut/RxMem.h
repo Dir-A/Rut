@@ -22,8 +22,8 @@ namespace Rut::RxMem
 	public:
 		void Rewind();
 		template<class Size_T> void Skip(Size_T nBytes);
-		template<class Ptr_T> Ptr_T CurPtr() const;
-		template<class Data_T> Data_T Read();
+		template<class Ptr_T> auto CurPtr() const;
+		template<class Data_T> auto Read();
 	};
 
 	Reader::Reader(const void* pData) : m_pData((const uint8_t*)pData)
@@ -41,7 +41,7 @@ namespace Rut::RxMem
 		m_nPos += (Size_T)nBytes;
 	}
 
-	template<class Ptr_T> Ptr_T Reader::CurPtr() const
+	template<class Ptr_T> auto Reader::CurPtr() const
 	{
 		if constexpr (std::is_pointer_v<Ptr_T>)
 		{
@@ -53,7 +53,7 @@ namespace Rut::RxMem
 		}
 	}
 
-	template<class Data_T> Data_T Reader::Read()
+	template<class Data_T> auto Reader::Read()
 	{
 		Data_T val = *this->CurPtr<Data_T*>();
 		m_nPos += sizeof(Data_T);
