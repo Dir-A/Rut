@@ -1,11 +1,53 @@
 ﻿#pragma once
-#include <string>
-#include <memory>
-#include <filesystem>
+#include <cassert>
 #include <concepts>
-#include <utility>
 #include <type_traits>
+#include <memory>
+#include <string>
+#include <utility>
+#include <filesystem>
 
+
+namespace Rut::RxMem
+{
+	class Reader
+	{
+	private:
+		size_t m_nPos = 0;
+		const uint8_t* m_pData = nullptr;
+
+	public:
+		Reader(const void* pData);
+
+	public:
+		template<class Ptr_T> Ptr_T CurPtr() const;
+		template<class Data_T> Data_T Read();
+	};
+
+	Reader::Reader(const void* pData) : m_pData((const uint8_t*)pData)
+	{
+
+	};
+
+	template<class Ptr_T> Ptr_T Reader::CurPtr() const
+	{
+		if constexpr (std::is_pointer_v<Ptr_T>)
+		{
+			return (Ptr_T)(m_pData + m_nPos);
+		}
+		else
+		{
+			return (Ptr_T*)(m_pData + m_nPos);
+		}
+	}
+
+	template<class Data_T> Data_T Reader::Read()
+	{
+		Data_T val = *this->CurPtr<Data_T*>();
+		m_nPos += sizeof(Data_T);
+		return val;
+	}
+}
 
 namespace Rut::RxMem
 {
@@ -81,4 +123,5 @@ namespace Rut::RxMem
 		if (nPos != AUTO_MEM_AUTO_SIZE) { rfFS.SetPos(nPos); }
 		rfFS.Write(this->GetPtr(), this->GetSize());
 	}
+
 }
