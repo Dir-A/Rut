@@ -20,6 +20,8 @@ namespace Rut::RxMem
 		Reader(const void* pData);
 
 	public:
+		void Rewind();
+		void Skip(size_t nBytes);
 		template<class Ptr_T> Ptr_T CurPtr() const;
 		template<class Data_T> Data_T Read();
 	};
@@ -27,7 +29,17 @@ namespace Rut::RxMem
 	Reader::Reader(const void* pData) : m_pData((const uint8_t*)pData)
 	{
 
-	};
+	}
+
+	void Reader::Rewind()
+	{
+		m_nPos = 0;
+	}
+
+	void Reader::Skip(size_t nBytes)
+	{
+		m_nPos += nBytes;
+	}
 
 	template<class Ptr_T> Ptr_T Reader::CurPtr() const
 	{
