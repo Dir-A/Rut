@@ -30,6 +30,7 @@ namespace Rut::RxMem
 		template<class Size_T> void Skip(Size_T nBytes);
 		template<class Ptr_T> auto CurPtr() const;
 		template<class Data_T> auto Read();
+		template<class Data_T> void Read(Data_T& rData);
 		template<class Size_T> void Read(void* pData, Size_T nBytes);
 		template<class Data_T> void Write(const Data_T& rData);
 		template<class Size_T> void Write(const void* pData, Size_T nBytes);
@@ -77,12 +78,23 @@ namespace Rut::RxMem
 		return val;
 	}
 
+	template<class Data_T> inline void View::Read(Data_T& rData)
+	{
+		if constexpr (std::is_same_v<Data_T, Rut::RxMem::Auto>)
+		{
+			this->Read(rData.GetPtr(), rData.GetSize());
+		}
+		else
+		{
+			this->Read(&rData, sizeof(rData));
+		}
+	}
+
 	template<class Size_T> inline void View::Read(void* pData, Size_T nBytes)
 	{
 		std::memcpy(pData, this->CurPtr<void>(), nBytes);
 		m_nPos += nBytes;
 	}
-
 
 	template<class Data_T> inline void View::Write(const Data_T& rData)
 	{
@@ -104,7 +116,7 @@ namespace Rut::RxMem
 
 	template<class Data_T> inline View& View::operator>>(Data_T& rData)
 	{
-		rData = this->Read<Data_T>();
+		this->Read<Data_T>(rData);
 		return *this;
 	}
 

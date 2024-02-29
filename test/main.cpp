@@ -7,18 +7,6 @@ struct MyStruct
 	uint32_t xx;
 };
 
-void ViewTest(const Rut::RxMem::View& rfView)
-{
-	rfView.Write<uint32_t>(10);
-	rfView.Write<uint32_t>(11);
-	rfView.Write<uint32_t>(13);
-	rfView.Rewind();
-
-	auto x0 = rfView.Read<uint32_t>();
-	auto x1 = rfView.Read<uint32_t>();
-	auto x3 = rfView.Read< uint32_t>();
-	rfView.Rewind();
-}
 
 int main(int argc, char* argv[])
 {
@@ -44,10 +32,12 @@ int main(int argc, char* argv[])
 	view >> t0 >> t1 >> t2;
 	view.Rewind();
 
-	std::string stx = "123";
-	MyStruct my = { 102 };
 	uint32_t xxe2[3] = { 31,31,4 };
 	view.Write(xxe2);
+	view.Rewind();
+
+	uint32_t xxe22[3] = { 0 };
+	view >> xxe22;
 	view.Rewind();
 
 	Rut::RxMem::Auto memx;
