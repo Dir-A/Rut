@@ -1,6 +1,11 @@
 ﻿#include <iostream>
 #include "Rut/RxMem.h"
 
+struct MyStruct
+{
+	uint32_t xx;
+};
+
 int main(int argc, char* argv[])
 {
 	uint32_t buffer[3] = { 0 };
@@ -26,8 +31,13 @@ int main(int argc, char* argv[])
 	view.Rewind();
 
 	std::string stx = "123";
-	view.Write(stx.data(),stx.size() + 1);
+	MyStruct my = { 102 };
+	uint32_t xxe2[3] = { 31,31,4 };
+	view.Write(xxe2);
 	view.Rewind();
+
+	Rut::RxMem::Auto memx;
+	view.Write(memx);
 
 	int a = 0;
 }

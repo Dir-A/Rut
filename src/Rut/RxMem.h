@@ -7,6 +7,11 @@
 #include <utility>
 #include <filesystem>
 
+namespace Rut::RxMem
+{
+	class View;
+	class Auto;
+}
 
 namespace Rut::RxMem
 {
@@ -26,10 +31,10 @@ namespace Rut::RxMem
 		template<class Ptr_T> auto CurPtr() const;
 		template<class Data_T> auto Read();
 		template<class Size_T> void Read(void* pData, Size_T nBytes);
-		template<class Data_T> void Write(const Data_T& rfData);
+		template<class Data_T> void Write(const Data_T& rData);
 		template<class Size_T> void Write(const void* pData, Size_T nBytes);
-		template<class Data_T> View& operator>>(Data_T& rfData);
-		template<class Data_T> View& operator<<(const Data_T& rfData);
+		template<class Data_T> View& operator>>(Data_T& rData);
+		template<class Data_T> View& operator<<(const Data_T& rData);
 
 	};
 
@@ -78,9 +83,17 @@ namespace Rut::RxMem
 		m_nPos += nBytes;
 	}
 
-	template<class Data_T> inline void View::Write(const Data_T& rfData)
+
+	template<class Data_T> inline void View::Write(const Data_T& rData)
 	{
-		this->Write(&rfData, sizeof(rfData));
+		if constexpr (std::is_same_v<Data_T, Rut::RxMem::Auto>)
+		{
+			this->Write(rData.GetPtr(), rData.GetSize());
+		}
+		else
+		{
+			this->Write(&rData, sizeof(rData));
+		}
 	}
 
 	template<class Size_T> inline void View::Write(const void* pData, Size_T nBytes)
@@ -89,15 +102,15 @@ namespace Rut::RxMem
 		m_nPos += nBytes;
 	}
 
-	template<class Data_T> inline View& View::operator>>(Data_T& rfData)
+	template<class Data_T> inline View& View::operator>>(Data_T& rData)
 	{
-		rfData = this->Read<Data_T>();
+		rData = this->Read<Data_T>();
 		return *this;
 	}
 
-	template<class Data_T> inline View& View::operator<<(const Data_T& rfData)
+	template<class Data_T> inline View& View::operator<<(const Data_T& rData)
 	{
-		this->Write<Data_T>(rfData);
+		this->Write<Data_T>(rData);
 		return *this;
 	}
 }
@@ -149,15 +162,22 @@ namespace Rut::RxMem
 		template <FileStreamType T> void WriteData(T&& rfFS, size_t nPos = AUTO_MEM_AUTO_SIZE);
 
 	public:
-		template<class T = uint8_t*> T GetPtr() const noexcept;
+		template<class Ptr_T = uint8_t> auto GetPtr() const noexcept;
 		template<class T = size_t> constexpr T GetSize() const noexcept;
 		View GetView();
 		void SetSize(size_t uiNewSize, bool isCopy = false);
 	};
 
-	template<class T> T Auto::GetPtr() const noexcept
+	template<class T> auto Auto::GetPtr() const noexcept
 	{
-		return (T)m_upMemData.get();
+		if constexpr (std::is_pointer_v<T>)
+		{
+			return (T)m_upMemData.get();
+		}
+		else
+		{
+			return (T*)m_upMemData.get();
+		}
 	}
 
 	template<class T> constexpr T Auto::GetSize() const noexcept
