@@ -7,6 +7,19 @@ struct MyStruct
 	uint32_t xx;
 };
 
+void ViewTest(const Rut::RxMem::View& rfView)
+{
+	rfView.Write<uint32_t>(10);
+	rfView.Write<uint32_t>(11);
+	rfView.Write<uint32_t>(13);
+	rfView.Rewind();
+
+	auto x0 = rfView.Read<uint32_t>();
+	auto x1 = rfView.Read<uint32_t>();
+	auto x3 = rfView.Read< uint32_t>();
+	rfView.Rewind();
+}
+
 int main(int argc, char* argv[])
 {
 	uint32_t buffer[3] = { 0 };
