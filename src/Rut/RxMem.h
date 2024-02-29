@@ -23,6 +23,7 @@ namespace Rut::RxMem
 
 	public:
 		View(const void* pData);
+		View(Auto& amData);
 		template<class Size_T> View(const void* pData, Size_T nSkip);
 
 	public:
@@ -39,6 +40,11 @@ namespace Rut::RxMem
 	};
 
 	inline View::View(const void* pData) : m_pData((const uint8_t*)pData)
+	{
+
+	}
+
+	inline View::View(Auto& amData) : View(amData.GetPtr())
 	{
 
 	}

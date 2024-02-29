@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "Rut/RxMem.h"
 
+
 struct MyStruct
 {
 	uint32_t xx;
