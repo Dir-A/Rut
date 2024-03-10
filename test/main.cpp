@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include "Rut/RxMem.h"
+#include "Rut/RxCmd.h"
 
 
 struct MyStruct
@@ -7,8 +8,7 @@ struct MyStruct
 	uint32_t xx;
 };
 
-
-int main(int argc, char* argv[])
+static void TestView()
 {
 	uint32_t buffer[3] = { 0 };
 	Rut::RxMem::View view{ buffer };
@@ -44,4 +44,20 @@ int main(int argc, char* argv[])
 	view.Write(memx);
 
 	int a = 0;
+}
+
+static void TestCmd()
+{
+	const wchar_t* argv[] = { L"1.exe", L"-mode", L"batch", L"-name",L"\"[061215][EX12] 雛鳥の堕ちる音\""};
+	Rut::RxCmd::Arg arg;
+
+	arg.AddCmd(L"-name", L"game name in filter json file");
+	arg.AddCmd(L"-mode", L"mode: [batch]");
+
+	arg.Load(5, (wchar_t**)argv);
+}
+
+int main(int argc, char* argv[])
+{
+	TestCmd();
 }

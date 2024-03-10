@@ -128,7 +128,15 @@ namespace Rut::RxCmd::ArgManager
 			std::wstring_view value = aArgPtr[ite_arg + 1];
 			auto ite_map = m_mpCmd.find(option.data());
 			if (ite_map == m_mpCmd.end()) { throw std::runtime_error("RxCmd::Parser::Parse: Not Cmd Find!"); }
-			ite_map->second.SetValue(value.data());
+
+			if (value.size() && value.front() == L'\"' && value.back() == L'\"')
+			{
+				ite_map->second.SetValue(value.substr(1, value.size() - 2));
+			}
+			else
+			{
+				ite_map->second.SetValue(value.data());
+			}
 		}
 
 		return true;
