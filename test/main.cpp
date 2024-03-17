@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "Rut/RxMem.h"
 #include "Rut/RxCmd.h"
+#include "Rut/RxJson.h"
 
 
 struct MyStruct
@@ -57,7 +58,16 @@ static void TestCmd()
 	arg.Load(5, (wchar_t**)argv);
 }
 
+static void TestJson()
+{
+	Rut::RxJson::JValue jv;
+	jv = true;
+	auto ex = jv.Get<bool>();
+
+	int a = 0;
+}
+
 int main(int argc, char* argv[])
 {
-	TestCmd();
+	TestJson();
 }

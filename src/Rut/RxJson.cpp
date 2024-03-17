@@ -252,31 +252,6 @@ namespace Rut::RxJson
 		return *(m_Value.ObjPtr);
 	}
 
-	int JValue::ToInt() const
-	{
-		return this->operator JInt();
-	}
-
-	bool JValue::ToBool() const
-	{
-		return this->operator JBool();
-	}
-
-	double JValue::ToDouble() const
-	{
-		return this->operator JDouble();
-	}
-
-	const wchar_t* JValue::ToStrPtr() const
-	{
-		return this->operator std::wstring_view().data();
-	}
-
-	std::wstring_view JValue::ToStrView() const
-	{
-		return this->operator std::wstring_view();
-	}
-
 	static void FormatNewLine(std::wstring& wsText, size_t nIndent)
 	{
 		wsText.append(1, L'\n');

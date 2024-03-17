@@ -90,14 +90,49 @@ namespace Rut::RxJson
 
 		JArray& ToAry();
 		JObject& ToOBJ();
-		int ToInt() const;
-		bool ToBool() const;
-		double ToDouble() const;
-		const wchar_t* ToStrPtr() const;
-		std::wstring_view ToStrView() const;
+		template<class T> auto Get();
 
 		void Dump(std::wstring& wsText, bool isFormat = true, bool isOrder = false, size_t nIndent = 0) const;
 	};
+
+	template<class T> auto JValue::Get()
+	{
+		if constexpr (std::is_integral_v<T>)
+		{
+			if constexpr (std::is_same_v<T, bool>)
+			{
+				return this->operator JBool();
+			}
+			else
+			{
+				return (T)this->operator JInt();
+			}
+		}
+		else if constexpr (std::is_same_v<T, double>)
+		{
+			return this->operator JDouble();
+		}
+		else if constexpr (std::is_same_v<T, const wchar_t*>)
+		{
+			return this->operator std::wstring_view().data();
+		}
+		else if constexpr (std::is_same_v<T, std::wstring_view>)
+		{
+			return this->operator std::wstring_view();
+		}
+		else if constexpr (std::is_same_v<T, RxJson::JArray>)
+		{
+			return this->ToAry();
+		}
+		else if constexpr (std::is_same_v<T, RxJson::JObject>)
+		{
+			return this->ToOBJ();
+		}
+		else
+		{
+			throw std::runtime_error("RxJson:: convert type error!");
+		}
+	}
 }
 
 namespace Rut::RxJson
