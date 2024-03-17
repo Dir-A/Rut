@@ -37,6 +37,8 @@ static void TestView()
 	view.Write(xxe2);
 	view.Rewind();
 
+	auto xex = view.DataPtr();
+
 	uint32_t xxe22[3] = { 0 };
 	view >> xxe22;
 	view.Rewind();
@@ -69,5 +71,5 @@ static void TestJson()
 
 int main(int argc, char* argv[])
 {
-	TestJson();
+	TestView();
 }
